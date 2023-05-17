@@ -1,15 +1,21 @@
 <template>
   <h1>Yay Quiz!</h1>
-  <QuizForm :name="name" :question="question" :choices="choices"></QuizForm>
+  <div v-if="!quiz">No active quiz!</div>
+
+  <QuizForm
+    v-else
+    v-for="q in quiz.questions"
+    :name="quiz.name"
+    :question="q.question"
+    :choices="q.choices"
+  ></QuizForm>
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
+import { useQuizStore } from '@/stores/quiz'
 import QuizForm from './components/QuizForm.vue'
 
-const name = 'test'
-const question = 'What on earth?'
-const choices = [
-  { id: '1', value: '1', label: '1' },
-  { id: '2', value: '2', label: '2' },
-]
+const store = useQuizStore()
+const quiz = computed(() => store.activeQuiz)
 </script>
