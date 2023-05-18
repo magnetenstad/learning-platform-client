@@ -5,6 +5,7 @@ export type Question = {
   question: string
   choices?: RadioButton[]
   correctAnswer: string
+  evaluation?: string
 }
 
 export type Quiz = {
@@ -32,6 +33,11 @@ const compilerQuiz: Quiz = {
         'Explain why constant folding and propagation may be usefully applied several times to a given program.',
       correctAnswer:
         'Constant folding may reduce an assignment of a variable to a constant value. Propagating the constant into further expressions may reveal that their values are constant as well, so the expressions can be folded, and the new constant progagated in a second pass.',
+    },
+    {
+      question: 'Function inlining may increase program size.',
+      choices: [{ value: 'TRUE' }, { value: 'FALSE' }],
+      correctAnswer: 'TRUE',
     },
   ],
 }
