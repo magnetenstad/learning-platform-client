@@ -1,4 +1,5 @@
 import { Configuration, OpenAIApi } from 'npm:openai@3';
+import { z } from 'https://deno.land/x/zod@v3.16.1/mod.ts';
 import { env } from './env.ts';
 
 const configuration = new Configuration({
@@ -40,38 +41,25 @@ export const requestCompletion = async (prompt: string) => {
   }
 };
 
-export const generateQuestionPrompt = (
-  body:
-    | {
-        question: string;
-        correctAnswer: string;
-        userAnswer: string;
-      }
-    | unknown
-) => {
-  // TODO: Zod
-  if (
-    !(
-      body &&
-      typeof body === 'object' &&
-      'question' in body &&
-      'correctAnswer' in body &&
-      'userAnswer' in body &&
-      typeof body.question == 'string' &&
-      typeof body.correctAnswer == 'string' &&
-      typeof body.userAnswer == 'string' &&
-      body.question.length > 0 &&
-      body.correctAnswer.length > 0 &&
-      body.userAnswer.length > 0
-    )
-  ) {
-    console.error(`Body failed: ${JSON.stringify(body)}`);
+const questionSchema = z.object({
+  question: z.string().min(1).max(400),
+  correctAnswer: z.string().min(1).max(400).optional(),
+  userAnswer: z.string().min(1).max(400),
+});
+
+export const generateQuestionPrompt = (body: unknown) => {
+  const parsed = questionSchema.safeParse(body);
+
+  if (!parsed.success) {
+    console.error(parsed.error);
     return null;
   }
 
+  const data = parsed.data;
+
   return `Grade the following student answer (incorrect/somewhat correct/correct). Justify the grade and reflect on how the answer may be improved, without revealing the correct answer.
-Question: ${body.question}
-Correct answer: ${body.correctAnswer}
-Student answer: ${body.userAnswer}
+Question: ${data.question}
+${data.correctAnswer ? `Correct answer: ${data.correctAnswer}` : ''}
+Student answer: ${data.userAnswer}
 Grade and justification:`;
 };

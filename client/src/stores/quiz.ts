@@ -1,10 +1,10 @@
 import { RadioButton } from '@/components/RadioButtons.vue'
-import { defineStore } from 'pinia'
+import { acceptHMRUpdate, defineStore } from 'pinia'
 
 export type Question = {
   question: string
   choices?: RadioButton[]
-  correctAnswer: string
+  correctAnswer?: string
   evaluation?: string
 }
 
@@ -29,6 +29,9 @@ const compilerQuiz: Quiz = {
   name: 'compiler',
   questions: [
     {
+      question: 'What is a compiler?',
+    },
+    {
       question:
         'Explain why constant folding and propagation may be usefully applied several times to a given program.',
       correctAnswer:
@@ -50,15 +53,26 @@ export const useQuizStore = defineStore('quiz', {
 
   actions: {
     async submit(question: Question, userAnswer: string) {
-      const result = await fetch('http://localhost:8000/question', {
-        method: 'POST',
-        body: JSON.stringify({
-          question: question.question,
-          correctAnswer: question.correctAnswer,
-          userAnswer: userAnswer,
-        }),
-      })
-      return (await result.json()).result
+      if (userAnswer.trim().length == 0) {
+        return 'Please provide an answer.'
+      }
+      try {
+        const result = await fetch('http://localhost:8000/question', {
+          method: 'POST',
+          body: JSON.stringify({
+            question: question.question,
+            correctAnswer: question.correctAnswer,
+            userAnswer: userAnswer,
+          }),
+        })
+        return (await result.json()).result
+      } catch {
+        return 'Server error'
+      }
     },
   },
 })
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useQuizStore, import.meta.hot))
+}

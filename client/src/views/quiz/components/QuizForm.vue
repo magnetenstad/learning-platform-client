@@ -1,18 +1,21 @@
 <template>
-  <div>
-    <p>Q: {{ question.question }}</p>
+  <div class="question-container">
+    <p class="question-text">{{ question.question }}</p>
     <RadioButtons
       v-if="question.choices"
       name="name"
       :buttons="question.choices"
-      @input="userAnswer = ($event.target as HTMLInputElement).value"
+      @input="input"
     ></RadioButtons>
     <textarea
       v-if="!question.choices"
-      @input="userAnswer = ($event.target as HTMLInputElement).value"
+      class="question-textarea"
+      @input="input"
     ></textarea>
-    <br />
-    <button @click="submit">Submit</button>
+    <p v-if="question.evaluation">Evaluation: {{ question.evaluation }}</p>
+    <div class="bottom-row">
+      <button @click="submit">Submit</button>
+    </div>
   </div>
 </template>
 
@@ -32,7 +35,33 @@ const emit = defineEmits<{
 
 const userAnswer = ref('')
 
+const input = (ev: Event) => {
+  userAnswer.value = (ev.target as HTMLInputElement).value
+}
+
 const submit = () => {
   emit('submit', props.question, userAnswer.value)
 }
 </script>
+
+<style scoped>
+.question-container {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.question-text {
+  font-weight: bold;
+}
+
+.question-textarea {
+  min-width: 400px;
+  min-height: 100px;
+}
+
+.bottom-row {
+  padding: 0.5em;
+  display: flex;
+}
+</style>
