@@ -1,5 +1,5 @@
 import { Router } from 'https://deno.land/x/oak@v12.4.0/mod.ts';
-import { generateQuestionPrompt, requestCompletion } from './openAi.ts';
+import { generateQuestionPrompt, requestGpt } from './openAi.ts';
 
 export const router = new Router();
 
@@ -25,7 +25,7 @@ router.post('/question', async (ctx) => {
     console.warn('Failed');
     return;
   }
-  const result = await requestCompletion(prompt);
+  const result = await requestGpt(prompt);
   ctx.response.body = JSON.stringify({ result: result.result });
   ctx.response.status = result.status;
 });

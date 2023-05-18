@@ -29,5 +29,6 @@ const submit = async (question: Question, userAnswer: string) => {
   flex-direction: column;
   margin: auto;
   width: fit-content;
+  margin-bottom: 400px;
 }
 </style>

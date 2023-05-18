@@ -7,25 +7,18 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-export const requestCompletion = async (prompt: string) => {
+export const performRequestWrapper = async (
+  performRequest: () => Promise<{ result: string | undefined; status: number }>
+) => {
   if (!configuration.apiKey) {
     return {
-      error: {
-        message:
-          'OpenAI API key not configured, please follow instructions in README.md',
-      },
+      result: 'An error occurred during your request.',
       status: 500,
     };
   }
 
   try {
-    const completion = await openai.createCompletion({
-      model: 'text-davinci-003',
-      prompt: prompt,
-      temperature: 0.6,
-      max_tokens: 100,
-    });
-    return { result: completion.data.choices[0].text, status: 200 };
+    return await performRequest();
   } catch (error) {
     if (error.response) {
       console.error(error.response.status, error.response.data);
@@ -33,12 +26,34 @@ export const requestCompletion = async (prompt: string) => {
       console.error(`Error with OpenAI API request: ${error.message}`);
     }
     return {
-      error: {
-        message: 'An error occurred during your request.',
-      },
+      result: 'An error occurred during your request.',
       status: 500,
     };
   }
+};
+
+export const requestCompletion = async (prompt: string) => {
+  return await performRequestWrapper(async () => {
+    const result = await openai.createCompletion({
+      model: 'text-davinci-003', // $0.02 / 1K tokens
+      prompt: prompt,
+      temperature: 0.6,
+      max_tokens: 100,
+    });
+    return { result: result.data.choices[0].text, status: 200 };
+  });
+};
+
+export const requestGpt = async (prompt: string) => {
+  return await performRequestWrapper(async () => {
+    const result = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo', // $0.002 / 1K tokens
+      temperature: 0.6,
+      max_tokens: 100,
+      messages: [{ role: 'system', content: prompt }],
+    });
+    return { result: result.data.choices[0].message?.content, status: 200 };
+  });
 };
 
 const questionSchema = z.object({
@@ -56,10 +71,13 @@ export const generateQuestionPrompt = (body: unknown) => {
   }
 
   const data = parsed.data;
+  const isStatement =
+    data.correctAnswer?.toLowerCase() === 'true' ||
+    (data.correctAnswer?.toLowerCase() === 'false' &&
+      !data.question.includes('?'));
 
-  return `Grade the following student answer (incorrect/somewhat correct/correct). Justify the grade and reflect on how the answer may be improved, without revealing the correct answer.
-Question: ${data.question}
-${data.correctAnswer ? `Correct answer: ${data.correctAnswer}` : ''}
-Student answer: ${data.userAnswer}
-Grade and justification:`;
+  return `Grade my answer as correct, somewhat correct or incorrect. Explain any mistakes in my answer. Did I forget anything? What is important to know about to answer this question? 
+${isStatement ? 'Statement' : 'Question'}: "${data.question}"
+${data.correctAnswer ? `Professor's solution: "${data.correctAnswer}"` : ''}
+My answer: "${data.userAnswer}"`;
 };
