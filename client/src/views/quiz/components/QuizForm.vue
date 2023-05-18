@@ -1,17 +1,38 @@
 <template>
   <div>
-    <p>Q: {{ question }}</p>
-    <RadioButtons name="name" :buttons="choices"></RadioButtons>
-    <button>Submit</button>
+    <p>Q: {{ question.question }}</p>
+    <RadioButtons
+      v-if="question.choices"
+      name="name"
+      :buttons="question.choices"
+      @input="userAnswer = ($event.target as HTMLInputElement).value"
+    ></RadioButtons>
+    <textarea
+      v-if="!question.choices"
+      @input="userAnswer = ($event.target as HTMLInputElement).value"
+    ></textarea>
+    <br />
+    <button @click="submit">Submit</button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import RadioButtons, { RadioButton } from '@/components/RadioButtons.vue'
+import RadioButtons from '@/components/RadioButtons.vue'
+import { Question } from '@/stores/quiz'
+import { ref } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   name: string
-  question: string
-  choices: RadioButton[]
+  question: Question
 }>()
+
+const emit = defineEmits<{
+  submit: [question: Question, userAnswer: string]
+}>()
+
+const userAnswer = ref('')
+
+const submit = () => {
+  emit('submit', props.question, userAnswer.value)
+}
 </script>

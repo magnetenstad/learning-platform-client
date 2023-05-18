@@ -1,29 +1,31 @@
 import { Router } from 'https://deno.land/x/oak@v12.4.0/mod.ts';
-import { generateAnimalPrompt, requestCompletion } from './openAi.ts';
+import { generateQuestionPrompt, requestCompletion } from './openAi.ts';
 
 export const router = new Router();
 
 router.get('/', (ctx) => {
+  console.log('Request for /');
+
   ctx.response.body = 'Hello world!';
 });
 
-router.post('/animal', async (ctx) => {
-  const body = await ctx.request.body().value;
-  // TODO: Zod?
+router.post('/question', async (ctx) => {
+  console.log('Request for /question');
 
-  if (!body || !('animal' in body) || (body.animal ?? '').trim().length === 0) {
+  const body = JSON.parse(await ctx.request.body().value);
+
+  const prompt = generateQuestionPrompt(body);
+  if (!prompt) {
     ctx.response.status = 400;
     ctx.response.body = {
       error: {
-        message: 'Please enter a valid animal',
+        message: 'Please provide question, correctAnswer and userAnswer',
       },
     };
+    console.warn('Failed');
     return;
   }
-  console.log('C');
-
-  const prompt = generateAnimalPrompt(body.animal);
   const result = await requestCompletion(prompt);
+  ctx.response.body = JSON.stringify({ result: result.result });
   ctx.response.status = result.status;
-  ctx.response.body = result;
 });
