@@ -12,6 +12,7 @@ export type Quiz = {
   questions: Question[]
 }
 
+// TODO: get from server
 const scienceQuiz: Quiz = {
   name: 'science',
   questions: [
@@ -23,11 +24,22 @@ const scienceQuiz: Quiz = {
     },
   ],
 }
+const compilerQuiz: Quiz = {
+  name: 'compiler',
+  questions: [
+    {
+      question:
+        'Explain why constant folding and propagation may be usefully applied several times to a given program.',
+      correctAnswer:
+        'Constant folding may reduce an assignment of a variable to a constant value. Propagating the constant into further expressions may reveal that their values are constant as well, so the expressions can be folded, and the new constant progagated in a second pass.',
+    },
+  ],
+}
 
 export const useQuizStore = defineStore('quiz', {
   state: () => ({
-    quizes: [scienceQuiz] as Quiz[],
-    activeQuiz: scienceQuiz as Quiz | null,
+    quizes: [scienceQuiz, compilerQuiz] as Quiz[],
+    activeQuiz: compilerQuiz as Quiz | null,
   }),
 
   actions: {
