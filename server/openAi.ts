@@ -1,22 +1,12 @@
-import { Configuration, OpenAIApi } from 'npm:openai@3';
+import { OpenAI } from 'https://deno.land/x/openai@1.3.4/mod.ts';
 import { z } from 'https://deno.land/x/zod@v3.16.1/mod.ts';
 import { env } from './env.ts';
 
-const configuration = new Configuration({
-  apiKey: env.OPENAI_API_KEY,
-});
-const openai = new OpenAIApi(configuration);
+const openai = new OpenAI(env.OPENAI_API_KEY);
 
 export const performRequestWrapper = async (
   performRequest: () => Promise<{ result: string | undefined; status: number }>
 ) => {
-  if (!configuration.apiKey) {
-    return {
-      result: 'An error occurred during your request.',
-      status: 500,
-    };
-  }
-
   try {
     return await performRequest();
   } catch (error) {
@@ -38,9 +28,9 @@ export const requestCompletion = async (prompt: string) => {
       model: 'text-davinci-003', // $0.02 / 1K tokens
       prompt: prompt,
       temperature: 0.6,
-      max_tokens: 100,
+      maxTokens: 200,
     });
-    return { result: result.data.choices[0].text, status: 200 };
+    return { result: result.choices[0].text, status: 200 };
   });
 };
 
@@ -49,10 +39,10 @@ export const requestGpt = async (prompt: string) => {
     const result = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo', // $0.002 / 1K tokens
       temperature: 0.6,
-      max_tokens: 100,
+      maxTokens: 200,
       messages: [{ role: 'system', content: prompt }],
     });
-    return { result: result.data.choices[0].message?.content, status: 200 };
+    return { result: result.choices[0].message?.content, status: 200 };
   });
 };
 
