@@ -1,8 +1,7 @@
 import { OpenAI } from 'https://deno.land/x/openai@1.3.4/mod.ts';
 import { z } from 'https://deno.land/x/zod@v3.16.1/mod.ts';
-import { env } from './env.ts';
 
-const openai = new OpenAI(env.OPENAI_API_KEY);
+const openai = new OpenAI(Deno.env.get('OPENAI_API_KEY')!);
 
 export const performRequestWrapper = async (
   performRequest: () => Promise<{ result: string | undefined; status: number }>
