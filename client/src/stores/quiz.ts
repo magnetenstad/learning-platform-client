@@ -110,14 +110,17 @@ export const useQuizStore = defineStore('quiz', {
         return 'Please provide an answer.'
       }
       try {
-        const result = await fetch('http://localhost:8000/question', {
-          method: 'POST',
-          body: JSON.stringify({
-            question: `In ${name}. ${question.question}`,
-            correctAnswer: question.correctAnswer,
-            userAnswer: userAnswer,
-          }),
-        })
+        const result = await fetch(
+          'https://learning-platform.deno.dev/question',
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              question: `In ${name}. ${question.question}`,
+              correctAnswer: question.correctAnswer,
+              userAnswer: userAnswer,
+            }),
+          },
+        )
         return (await result.json()).result
       } catch {
         return 'Server error'
