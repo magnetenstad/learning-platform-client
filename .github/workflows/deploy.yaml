@@ -15,6 +15,10 @@ permissions:
   pages: write
   id-token: write
 
+defaults:
+  run:
+    working-directory: client
+
 # Allow one concurrent deployment
 concurrency:
   group: 'pages'
@@ -36,10 +40,8 @@ jobs:
           node-version: 18
           cache: 'npm'
       - name: Install dependencies
-        working-directory: ./client
         run: npm install
       - name: Build
-        working-directory: ./client
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v3
