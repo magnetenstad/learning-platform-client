@@ -28,8 +28,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Go to client
-        run: cd client
       - name: Checkout
         uses: actions/checkout@v3
       - name: Set up Node
@@ -38,8 +36,10 @@ jobs:
           node-version: 18
           cache: 'npm'
       - name: Install dependencies
+        working-directory: ./client
         run: npm install
       - name: Build
+        working-directory: ./client
         run: npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v3
