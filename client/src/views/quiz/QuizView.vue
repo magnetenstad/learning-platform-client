@@ -3,8 +3,14 @@
     <h1>Quiz: {{ quiz?.name }}</h1>
     <div v-if="!quiz">No active quiz!</div>
 
-    <div v-else v-for="q in quiz.questions">
-      <QuizForm :name="quiz.name" :question="q" @submit="submit"></QuizForm>
+    <div v-else v-for="(q, i) in quiz.questions">
+      <hr />
+      <QuizForm
+        :name="quiz.name"
+        :question="q"
+        :index="i + 1"
+        @submit="submit"
+      ></QuizForm>
     </div>
   </div>
 </template>
@@ -18,8 +24,13 @@ const store = useQuizStore()
 const quiz = computed(() => store.activeQuiz)
 
 const submit = async (question: Question, userAnswer: string) => {
+  if (!quiz.value) return
   question.evaluation = 'Loading..'
-  question.evaluation = await store.submit(question, userAnswer)
+  question.evaluation = await store.submit(
+    quiz.value.name,
+    question,
+    userAnswer,
+  )
 }
 </script>
 

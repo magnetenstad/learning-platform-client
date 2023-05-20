@@ -1,6 +1,8 @@
 <template>
   <div class="question-container">
-    <p class="question-text">{{ question.question }}</p>
+    <p class="question-text">
+      <b v-if="index">{{ index + ') ' }}</b> {{ question.question }}
+    </p>
     <RadioButtons
       v-if="question.choices"
       name="name"
@@ -27,6 +29,7 @@ import { ref } from 'vue'
 const props = defineProps<{
   name: string
   question: Question
+  index?: number
 }>()
 
 const emit = defineEmits<{
@@ -49,11 +52,12 @@ const submit = () => {
   max-width: 600px;
   display: flex;
   flex-direction: column;
+  margin: 4em 0;
 }
 
-.question-text {
+/* .question-text {
   font-weight: bold;
-}
+} */
 
 .question-textarea {
   min-width: 400px;
