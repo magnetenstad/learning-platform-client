@@ -23,7 +23,6 @@ import RadioButtons from '@/components/RadioButtons.vue'
 import { Question, Correctness } from '@/stores/quiz'
 
 const props = defineProps<{
-  name: string
   question: Question
   index?: number
   submitDisabled?: boolean

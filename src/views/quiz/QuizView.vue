@@ -1,10 +1,9 @@
 <template>
-  <h1>Quiz: {{ store.quiz.name }}</h1>
+  <h1>Quiz: {{ store.quiz.subject }}</h1>
 
   <div v-for="(q, i) in store.quiz.questions">
     <hr />
     <QuestionForm
-      :name="store.quiz.name"
       :question="q"
       :index="i + 1"
       @submit="submit"
@@ -27,7 +26,7 @@ const submitDisabled = ref(false)
 const submit = async (question: Question) => {
   submitDisabled.value = true
   question.evaluation = 'Loading..'
-  await store.requestGrade(store.quiz.name, question)
+  await store.requestGrade(store.quiz.subject, question)
   submitDisabled.value = false
 }
 

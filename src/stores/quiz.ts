@@ -1,5 +1,6 @@
 import { RadioButton } from '@/components/RadioButtons.vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import { useGlobalStore } from './global'
 
 export type Question = {
   question: string
@@ -11,7 +12,7 @@ export type Question = {
 }
 
 export type Quiz = {
-  name: string
+  subject: string
   questions: Question[]
 }
 
@@ -60,13 +61,29 @@ const fetchGrade = async (name: string, question: Question) => {
   }
 }
 
+const fetchQuestionInput = async (subject: string) => {
+  if (subject.trim().length == 0) {
+    return 'Please provide an subject.'
+  }
+  try {
+    const result = await fetch('https://owly.deno.dev/question-list', {
+      method: 'POST',
+      body: JSON.stringify({ subject: subject }),
+    })
+    return (await result.json()).result
+  } catch {
+    return 'Server error'
+  }
+}
+
 export const useQuizStore = defineStore('quiz', {
   state: () => ({
     quiz: {
-      name: 'owls',
+      subject: 'owls',
       questions: inputToQuestions(defaultQuestionInput),
     } as Quiz,
     questionInput: defaultQuestionInput,
+    loading: false,
   }),
 
   actions: {
@@ -97,19 +114,14 @@ export const useQuizStore = defineStore('quiz', {
         this.quiz.questions,
       )
     },
-    async requestQuestionList(subject: string) {
-      if (subject.trim().length == 0) {
-        return 'Please provide an subject.'
-      }
-      try {
-        const result = await fetch('https://owly.deno.dev/question-list', {
-          method: 'POST',
-          body: JSON.stringify({ subject: subject }),
-        })
-        return (await result.json()).result
-      } catch {
-        return 'Server error'
-      }
+    async requestQuestionList() {
+      const globalStore = useGlobalStore()
+      globalStore.startLoading(
+        `Generating quiz about ${this.quiz.subject}...\nThis can take up to 20 seconds.`,
+      )
+      this.questionInput = await fetchQuestionInput(this.quiz.subject)
+      this.readQuestionsFromInput()
+      globalStore.stopLoading()
     },
   },
 

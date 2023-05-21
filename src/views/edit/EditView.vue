@@ -1,8 +1,8 @@
 <template>
-  <h1>Edit: {{ store.quiz.name }}</h1>
+  <h1>Edit: {{ store.quiz.subject }}</h1>
   <div class="col">
     <label for="name">Quiz subject</label>
-    <input id="name" type="text" v-model="store.quiz.name" />
+    <input id="name" type="text" v-model="store.quiz.subject" />
     <br />
     <label for="name">Questions</label>
     <textarea id="name" type="text" v-model="store.questionInput"></textarea>
@@ -25,7 +25,7 @@ const generateDisabled = ref(false)
 
 const generate = async () => {
   generateDisabled.value = true
-  store.questionInput = await store.requestQuestionList(store.quiz.name)
+  await store.requestQuestionList()
   generateDisabled.value = false
 }
 </script>

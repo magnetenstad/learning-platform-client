@@ -1,13 +1,24 @@
 import EditView from '@/views/edit/EditView.vue'
 import QuizView from '@/views/quiz/QuizView.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { useQuizStore } from './stores/quiz'
 
 const routes = [
-  { path: '/edit', component: EditView },
-  { path: '/', component: QuizView },
+  { path: '/edit', name: 'edit', component: EditView },
+  { path: '/', name: 'quiz', component: QuizView },
+  { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/' },
 ]
 
 export const router = createRouter({
   history: createWebHashHistory(),
   routes,
+})
+
+router.afterEach(async to => {
+  const quizStore = useQuizStore()
+  const subject = to.query['subject']?.toString()
+  if (subject && subject != quizStore.quiz.subject) {
+    quizStore.quiz.subject = subject
+    await quizStore.requestQuestionList()
+  }
 })
