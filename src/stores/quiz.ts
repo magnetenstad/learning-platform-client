@@ -71,15 +71,19 @@ export const useQuizStore = defineStore('quiz', {
 
   actions: {
     async requestGrade(name: string, question: Question) {
+      question.correctness = Correctness.Unknown
+
       if (question.userAnswer == question.correctAnswer) {
         question.correctness = Correctness.Correct
       }
 
       question.evaluation = await fetchGrade(name, question)
 
-      const firstSentence = question.evaluation.split('.')[0]
+      const firstSentence = question.evaluation.split('.')[0].toLowerCase()
       if (!firstSentence) return
-      question.correctness = Correctness.Correct
+      if (firstSentence.includes('correct')) {
+        question.correctness = Correctness.Correct
+      }
       if (firstSentence.includes('incorrect')) {
         question.correctness = Correctness.Incorrect
       }
@@ -107,6 +111,26 @@ export const useQuizStore = defineStore('quiz', {
         return 'Server error'
       }
     },
+  },
+
+  getters: {
+    getScorePercentage: state =>
+      (
+        (100 *
+          state.quiz.questions
+            .map(q => {
+              switch (q.correctness) {
+                case Correctness.Correct:
+                  return 1
+                case Correctness.Somewhat:
+                  return 0.5
+                default:
+                  return 0
+              }
+            })
+            .reduce((sum: number, next) => sum + next, 0)) /
+        state.quiz.questions.length
+      ).toFixed(1) + ' %',
   },
 })
 

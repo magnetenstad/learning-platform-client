@@ -11,6 +11,9 @@
       :submitDisabled="submitDisabled"
     ></QuestionForm>
   </div>
+  <div>
+    <p>Score: {{ store.getScorePercentage }}</p>
+  </div>
 </template>
 
 <script lang="ts" setup>
