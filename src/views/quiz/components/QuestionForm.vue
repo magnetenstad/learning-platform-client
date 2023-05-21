@@ -12,7 +12,7 @@
     <textarea v-if="!question.choices" @input="input"></textarea>
     <p v-if="question.evaluation">Evaluation: {{ question.evaluation }}</p>
     <div class="bottom-row">
-      <button @click="submit">Submit</button>
+      <button @click="submit" :disabled="submitDisabled">Submit</button>
     </div>
   </div>
 </template>
@@ -26,6 +26,7 @@ const props = defineProps<{
   name: string
   question: Question
   index?: number
+  submitDisabled?: boolean
 }>()
 
 const emit = defineEmits<{

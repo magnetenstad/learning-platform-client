@@ -8,25 +8,28 @@
       :question="q"
       :index="i + 1"
       @submit="submit"
+      :submitDisabled="submitDisabled"
     ></QuestionForm>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { Question, useQuizStore } from '@/stores/quiz'
 import QuestionForm from './components/QuestionForm.vue'
 
 const store = useQuizStore()
+const submitDisabled = ref(false)
 
 const submit = async (question: Question, userAnswer: string) => {
-  if (!store.quiz) return
+  submitDisabled.value = true
   question.evaluation = 'Loading..'
   question.evaluation = await store.requestGrade(
     store.quiz.name,
     question,
     userAnswer,
   )
+  submitDisabled.value = false
 }
 
 onMounted(() => {
