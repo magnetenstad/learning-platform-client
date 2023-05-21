@@ -17,18 +17,17 @@ export type Quiz = {
 const inputToQuestions = (
   questions: string,
   prevQuestions: Question[] = [],
-) => {
+): Question[] => {
   return questions
     .split('\n')
     .filter(q => q.trim().length > 0)
-    .map(
-      question =>
-        ({
-          question,
-          userAnswer:
-            prevQuestions.find(q => q.question == question)?.userAnswer ?? '',
-        } as Question),
-    )
+    .map(question => {
+      const prevQuestion = prevQuestions.find(q => q.question == question)
+      if (prevQuestion) {
+        return Object.assign({}, prevQuestion)
+      }
+      return { question, userAnswer: '' }
+    })
 }
 
 const defaultQuestionInput = 'Can all owls fly?\nWhen do owls sleep?'
