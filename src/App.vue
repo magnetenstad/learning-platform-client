@@ -1,10 +1,12 @@
 <template>
   <div>
     <nav>
-      <router-link to="/">Home</router-link>
-      <router-link to="/quiz">Quiz</router-link>
+      <router-link to="/">Quiz</router-link>
+      <router-link to="/edit">Edit</router-link>
     </nav>
-    <router-view></router-view>
+    <div class="view-container">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -19,5 +21,13 @@ nav {
 
   border: 1px solid black;
   padding: 1em;
+}
+
+.view-container {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  width: 600px;
+  margin-bottom: 400px;
 }
 </style>

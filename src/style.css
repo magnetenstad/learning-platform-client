@@ -1,0 +1,13 @@
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+textarea {
+  min-height: 100px;
+  padding: 0.5em;
+}
+
+input {
+  padding: 0.5em;
+}

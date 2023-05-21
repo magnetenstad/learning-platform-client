@@ -9,11 +9,7 @@
       :buttons="question.choices"
       @input="input"
     ></RadioButtons>
-    <textarea
-      v-if="!question.choices"
-      class="question-textarea"
-      @input="input"
-    ></textarea>
+    <textarea v-if="!question.choices" @input="input"></textarea>
     <p v-if="question.evaluation">Evaluation: {{ question.evaluation }}</p>
     <div class="bottom-row">
       <button @click="submit">Submit</button>
@@ -49,20 +45,14 @@ const submit = () => {
 
 <style scoped>
 .question-container {
-  max-width: 600px;
   display: flex;
   flex-direction: column;
-  margin: 4em 0;
+  margin: 2em 0;
 }
 
 /* .question-text {
   font-weight: bold;
 } */
-
-.question-textarea {
-  min-width: 400px;
-  min-height: 100px;
-}
 
 .bottom-row {
   padding: 0.5em;

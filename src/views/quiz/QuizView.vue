@@ -1,45 +1,35 @@
 <template>
-  <div class="view-container">
-    <h1>Quiz: {{ quiz?.name }}</h1>
-    <div v-if="!quiz">No active quiz!</div>
+  <h1>Quiz: {{ store.quiz.name }}</h1>
 
-    <div v-else v-for="(q, i) in quiz.questions">
-      <hr />
-      <QuizForm
-        :name="quiz.name"
-        :question="q"
-        :index="i + 1"
-        @submit="submit"
-      ></QuizForm>
-    </div>
+  <div v-for="(q, i) in store.quiz.questions">
+    <hr />
+    <QuestionForm
+      :name="store.quiz.name"
+      :question="q"
+      :index="i + 1"
+      @submit="submit"
+    ></QuestionForm>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { onMounted } from 'vue'
 import { Question, useQuizStore } from '@/stores/quiz'
-import QuizForm from './components/QuizForm.vue'
+import QuestionForm from './components/QuestionForm.vue'
 
 const store = useQuizStore()
-const quiz = computed(() => store.activeQuiz)
 
 const submit = async (question: Question, userAnswer: string) => {
-  if (!quiz.value) return
+  if (!store.quiz) return
   question.evaluation = 'Loading..'
   question.evaluation = await store.submit(
-    quiz.value.name,
+    store.quiz.name,
     question,
     userAnswer,
   )
 }
-</script>
 
-<style>
-.view-container {
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-  width: fit-content;
-  margin-bottom: 400px;
-}
-</style>
+onMounted(() => {
+  store.readQuestionsFromInput()
+})
+</script>
