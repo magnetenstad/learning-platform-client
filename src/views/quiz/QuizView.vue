@@ -21,14 +21,10 @@ import QuestionForm from './components/QuestionForm.vue'
 const store = useQuizStore()
 const submitDisabled = ref(false)
 
-const submit = async (question: Question, userAnswer: string) => {
+const submit = async (question: Question) => {
   submitDisabled.value = true
   question.evaluation = 'Loading..'
-  question.evaluation = await store.requestGrade(
-    store.quiz.name,
-    question,
-    userAnswer,
-  )
+  question.evaluation = await store.requestGrade(store.quiz.name, question)
   submitDisabled.value = false
 }
 

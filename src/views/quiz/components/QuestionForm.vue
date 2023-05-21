@@ -9,7 +9,7 @@
       :buttons="question.choices"
       @input="input"
     ></RadioButtons>
-    <textarea v-if="!question.choices" @input="input"></textarea>
+    <textarea v-if="!question.choices" v-model="question.userAnswer"></textarea>
     <p v-if="question.evaluation">Evaluation: {{ question.evaluation }}</p>
     <br />
     <div>
@@ -21,7 +21,6 @@
 <script lang="ts" setup>
 import RadioButtons from '@/components/RadioButtons.vue'
 import { Question } from '@/stores/quiz'
-import { ref } from 'vue'
 
 const props = defineProps<{
   name: string
@@ -31,17 +30,15 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  submit: [question: Question, userAnswer: string]
+  submit: [question: Question]
 }>()
 
-const userAnswer = ref('')
-
 const input = (ev: Event) => {
-  userAnswer.value = (ev.target as HTMLInputElement).value
+  props.question.userAnswer = (ev.target as HTMLInputElement).value
 }
 
 const submit = () => {
-  emit('submit', props.question, userAnswer.value)
+  emit('submit', props.question)
 }
 </script>
 

@@ -3,6 +3,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 
 export type Question = {
   question: string
+  userAnswer: string
   choices?: RadioButton[]
   correctAnswer?: string
   evaluation?: string
@@ -13,13 +14,21 @@ export type Quiz = {
   questions: Question[]
 }
 
-const inputToQuestions = (questions: string) => {
+const inputToQuestions = (
+  questions: string,
+  prevQuestions: Question[] = [],
+) => {
   return questions
     .split('\n')
     .filter(q => q.trim().length > 0)
-    .map(question => ({
-      question,
-    }))
+    .map(
+      question =>
+        ({
+          question,
+          userAnswer:
+            prevQuestions.find(q => q.question == question)?.userAnswer ?? '',
+        } as Question),
+    )
 }
 
 const defaultQuestionInput = 'Can all owls fly?\nWhen do owls sleep?'
@@ -34,8 +43,8 @@ export const useQuizStore = defineStore('quiz', {
   }),
 
   actions: {
-    async requestGrade(name: string, question: Question, userAnswer: string) {
-      if (userAnswer.trim().length == 0) {
+    async requestGrade(name: string, question: Question) {
+      if (question.userAnswer.trim().length == 0) {
         return 'Please provide an answer.'
       }
       try {
@@ -44,7 +53,7 @@ export const useQuizStore = defineStore('quiz', {
           body: JSON.stringify({
             question: question.question,
             correctAnswer: question.correctAnswer,
-            userAnswer: userAnswer,
+            userAnswer: question.userAnswer,
             subject: name,
           }),
         })
@@ -54,7 +63,10 @@ export const useQuizStore = defineStore('quiz', {
       }
     },
     readQuestionsFromInput() {
-      this.quiz.questions = inputToQuestions(this.questionInput)
+      this.quiz.questions = inputToQuestions(
+        this.questionInput,
+        this.quiz.questions,
+      )
     },
     async requestQuestionList(subject: string) {
       if (subject.trim().length == 0) {
