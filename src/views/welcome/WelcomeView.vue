@@ -1,5 +1,5 @@
 <template>
-  <h1>Welcome to Owly!</h1>
+  <h1>Welcome to Owly! 🦉</h1>
   <div class="col">
     <label for="name">I would like to learn about</label>
     <input id="name" type="text" v-model="subject" />
