@@ -19,7 +19,6 @@ nav {
   display: flex;
   gap: 1em;
 
-  border: 1px solid black;
   padding: 1em;
 }
 
@@ -27,7 +26,7 @@ nav {
   display: flex;
   flex-direction: column;
   margin: auto;
-  width: 600px;
+  max-width: 600px;
   margin-bottom: 400px;
 }
 </style>
