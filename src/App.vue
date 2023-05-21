@@ -1,6 +1,8 @@
 <template>
   <div v-if="store.loading" class="loading-overlay">
-    <p v-for="text in store.loadingText.split('\n')">{{ text }}</p>
+    <p class="loading-text" v-for="text in store.loadingText.split('\n')">
+      {{ text }}
+    </p>
   </div>
   <div>
     <nav>
@@ -47,5 +49,10 @@ nav {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.loading-text {
+  padding: 1em;
+  text-align: center;
 }
 </style>
