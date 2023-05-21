@@ -16,9 +16,17 @@ export const router = createRouter({
 
 router.afterEach(async to => {
   const quizStore = useQuizStore()
+
+  if (quizStore.quiz.subject.length == 0) {
+    quizStore.quiz.subject = 'fun facts'
+    await quizStore.requestQuestionList()
+    return
+  }
+
   const subject = to.query['subject']?.toString()
   if (subject && subject != quizStore.quiz.subject) {
     quizStore.quiz.subject = subject
     await quizStore.requestQuestionList()
+    return
   }
 })

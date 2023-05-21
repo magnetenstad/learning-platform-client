@@ -39,8 +39,6 @@ const inputToQuestions = (
     })
 }
 
-const defaultQuestionInput = 'Can all owls fly?\nWhen do owls sleep?'
-
 const fetchGrade = async (name: string, question: Question) => {
   if (question.userAnswer.trim().length == 0) {
     return 'Please provide an answer.'
@@ -79,10 +77,10 @@ const fetchQuestionInput = async (subject: string) => {
 export const useQuizStore = defineStore('quiz', {
   state: () => ({
     quiz: {
-      subject: 'owls',
-      questions: inputToQuestions(defaultQuestionInput),
+      subject: '',
+      questions: [],
     } as Quiz,
-    questionInput: defaultQuestionInput,
+    questionInput: '',
     loading: false,
   }),
 
