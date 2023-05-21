@@ -1,5 +1,14 @@
 <template>
-  <h1>Quiz: {{ store.quiz.subject }}</h1>
+  <div class="row">
+    <h1>Quiz: {{ store.quiz.subject }}</h1>
+    <div>
+      <button @click="router.push({ name: 'edit' })">Edit</button>
+    </div>
+  </div>
+
+  <p v-if="store.quiz.questions.length == 0">
+    Go <router-link to="/edit">add some questions</router-link>!
+  </p>
 
   <div v-for="(q, i) in store.quiz.questions">
     <hr />
@@ -19,6 +28,8 @@
 import { onMounted, ref } from 'vue'
 import { Question, useQuizStore } from '@/stores/quiz'
 import QuestionForm from './components/QuestionForm.vue'
+import { router } from '@/router'
+import { RouterLink } from 'vue-router'
 
 const store = useQuizStore()
 const submitDisabled = ref(false)

@@ -1,11 +1,21 @@
 <template>
-  <h1>Edit: {{ store.quiz.subject }}</h1>
+  <div class="row">
+    <h1>Edit: {{ store.quiz.subject }}</h1>
+    <div>
+      <button @click="router.push({ name: 'quiz' })">Take quiz</button>
+    </div>
+  </div>
   <div class="col">
     <label for="name">Quiz subject</label>
     <input id="name" type="text" v-model="store.quiz.subject" />
     <br />
     <label for="name">Questions</label>
-    <textarea id="name" type="text" v-model="store.questionInput"></textarea>
+    <textarea
+      id="name"
+      type="text"
+      v-model="store.questionInput"
+      style="height: 200px"
+    ></textarea>
     <br />
     <div>
       <button @click="generate" :disabled="generateDisabled">
@@ -16,6 +26,7 @@
 </template>
 
 <script lang="ts" setup>
+import { router } from '@/router'
 import { useQuizStore } from '@/stores/quiz'
 import { ref } from 'vue'
 

@@ -4,19 +4,13 @@
       {{ text }}
     </p>
   </div>
-  <div>
-    <nav>
-      <router-link to="/">Quiz</router-link>
-      <router-link to="/edit">Edit</router-link>
-    </nav>
-    <div class="view-container">
-      <router-view></router-view>
-    </div>
+  <div class="view-container">
+    <router-view></router-view>
   </div>
 </template>
 
 <script setup lang="ts">
-import { RouterView, RouterLink } from 'vue-router'
+import { RouterView } from 'vue-router'
 import { useGlobalStore } from './stores/global'
 
 const store = useGlobalStore()

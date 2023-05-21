@@ -3,6 +3,13 @@
   flex-direction: column;
 }
 
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
 textarea {
   min-height: 100px;
   padding: 0.5em;
