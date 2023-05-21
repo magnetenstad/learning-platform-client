@@ -4,6 +4,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 export type Question = {
   question: string
   userAnswer: string
+  correctness: Correctness
   choices?: RadioButton[]
   correctAnswer?: string
   evaluation?: string
@@ -12,6 +13,13 @@ export type Question = {
 export type Quiz = {
   name: string
   questions: Question[]
+}
+
+export enum Correctness {
+  Unknown,
+  Incorrect,
+  Somewhat,
+  Correct,
 }
 
 const inputToQuestions = (
@@ -26,11 +34,31 @@ const inputToQuestions = (
       if (prevQuestion) {
         return Object.assign({}, prevQuestion)
       }
-      return { question, userAnswer: '' }
+      return { question, userAnswer: '', correctness: Correctness.Unknown }
     })
 }
 
 const defaultQuestionInput = 'Can all owls fly?\nWhen do owls sleep?'
+
+const fetchGrade = async (name: string, question: Question) => {
+  if (question.userAnswer.trim().length == 0) {
+    return 'Please provide an answer.'
+  }
+  try {
+    const result = await fetch('https://owly.deno.dev/grade', {
+      method: 'POST',
+      body: JSON.stringify({
+        question: question.question,
+        correctAnswer: question.correctAnswer,
+        userAnswer: question.userAnswer,
+        subject: name,
+      }),
+    })
+    return (await result.json()).result as string
+  } catch {
+    return 'Server error'
+  }
+}
 
 export const useQuizStore = defineStore('quiz', {
   state: () => ({
@@ -43,22 +71,20 @@ export const useQuizStore = defineStore('quiz', {
 
   actions: {
     async requestGrade(name: string, question: Question) {
-      if (question.userAnswer.trim().length == 0) {
-        return 'Please provide an answer.'
+      if (question.userAnswer == question.correctAnswer) {
+        question.correctness = Correctness.Correct
       }
-      try {
-        const result = await fetch('https://owly.deno.dev/grade', {
-          method: 'POST',
-          body: JSON.stringify({
-            question: question.question,
-            correctAnswer: question.correctAnswer,
-            userAnswer: question.userAnswer,
-            subject: name,
-          }),
-        })
-        return (await result.json()).result
-      } catch {
-        return 'Server error'
+
+      question.evaluation = await fetchGrade(name, question)
+
+      const firstSentence = question.evaluation.split('.')[0]
+      if (!firstSentence) return
+      question.correctness = Correctness.Correct
+      if (firstSentence.includes('incorrect')) {
+        question.correctness = Correctness.Incorrect
+      }
+      if (firstSentence.includes('somewhat')) {
+        question.correctness = Correctness.Somewhat
       }
     },
     readQuestionsFromInput() {

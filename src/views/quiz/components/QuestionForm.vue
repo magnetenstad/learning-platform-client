@@ -1,5 +1,5 @@
 <template>
-  <div class="question-container">
+  <div class="question-container" :style="{ color: getColor(question) }">
     <p class="question-text">
       <b v-if="index">{{ index + ') ' }}</b> {{ question.question }}
     </p>
@@ -20,7 +20,7 @@
 
 <script lang="ts" setup>
 import RadioButtons from '@/components/RadioButtons.vue'
-import { Question } from '@/stores/quiz'
+import { Question, Correctness } from '@/stores/quiz'
 
 const props = defineProps<{
   name: string
@@ -39,6 +39,21 @@ const input = (ev: Event) => {
 
 const submit = () => {
   emit('submit', props.question)
+}
+
+const getColor = (question: Question) => {
+  switch (question.correctness) {
+    case Correctness.Unknown:
+      return 'black'
+    case Correctness.Incorrect:
+      return 'red'
+    case Correctness.Somewhat:
+      return 'orange'
+    case Correctness.Correct:
+      return 'green'
+    default:
+      return 'black'
+  }
 }
 </script>
 
