@@ -10,7 +10,7 @@
     <br />
     <div>
       <button @click="generate" :disabled="generateDisabled">
-        Generate based on subject
+        {{ generateDisabled ? 'Loading..' : 'Generate based on subject' }}
       </button>
     </div>
   </div>
