@@ -34,6 +34,7 @@ nav {
   margin: auto;
   max-width: 600px;
   margin-bottom: 400px;
+  padding: 1em;
 }
 
 .loading-overlay {
