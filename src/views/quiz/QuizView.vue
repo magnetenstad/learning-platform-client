@@ -22,7 +22,7 @@ const store = useQuizStore()
 const submit = async (question: Question, userAnswer: string) => {
   if (!store.quiz) return
   question.evaluation = 'Loading..'
-  question.evaluation = await store.submit(
+  question.evaluation = await store.requestGrade(
     store.quiz.name,
     question,
     userAnswer,

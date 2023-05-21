@@ -34,23 +34,20 @@ export const useQuizStore = defineStore('quiz', {
   }),
 
   actions: {
-    async submit(name: string, question: Question, userAnswer: string) {
+    async requestGrade(name: string, question: Question, userAnswer: string) {
       if (userAnswer.trim().length == 0) {
         return 'Please provide an answer.'
       }
       try {
-        const result = await fetch(
-          'https://learning-platform.deno.dev/question',
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              question: question.question,
-              correctAnswer: question.correctAnswer,
-              userAnswer: userAnswer,
-              subject: name,
-            }),
-          },
-        )
+        const result = await fetch('https://owly.deno.dev/grade', {
+          method: 'POST',
+          body: JSON.stringify({
+            question: question.question,
+            correctAnswer: question.correctAnswer,
+            userAnswer: userAnswer,
+            subject: name,
+          }),
+        })
         return (await result.json()).result
       } catch {
         return 'Server error'
@@ -58,6 +55,20 @@ export const useQuizStore = defineStore('quiz', {
     },
     readQuestionsFromInput() {
       this.quiz.questions = inputToQuestions(this.questionInput)
+    },
+    async requestQuestionList(subject: string) {
+      if (subject.trim().length == 0) {
+        return 'Please provide an subject.'
+      }
+      try {
+        const result = await fetch('https://owly.deno.dev/question-list', {
+          method: 'POST',
+          body: JSON.stringify({ subject: subject }),
+        })
+        return (await result.json()).result
+      } catch {
+        return 'Server error'
+      }
     },
   },
 })
