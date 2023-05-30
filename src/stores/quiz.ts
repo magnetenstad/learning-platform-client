@@ -23,6 +23,10 @@ export enum Correctness {
   Correct,
 }
 
+const api = import.meta.env.DEV
+  ? 'http://localhost:8000'
+  : 'https://owly.deno.dev'
+
 const inputToQuestions = (
   questions: string,
   prevQuestions: Question[] = [],
@@ -44,7 +48,7 @@ const fetchGrade = async (name: string, question: Question) => {
     return 'Please provide an answer.'
   }
   try {
-    const result = await fetch('https://owly.deno.dev/grade', {
+    const result = await fetch(`${api}/grade`, {
       method: 'POST',
       body: JSON.stringify({
         question: question.question,
@@ -64,7 +68,7 @@ const fetchQuestionInput = async (subject: string) => {
     return 'Please provide an subject.'
   }
   try {
-    const result = await fetch('https://owly.deno.dev/question-list', {
+    const result = await fetch(`${api}/question-list`, {
       method: 'POST',
       body: JSON.stringify({ subject: subject }),
     })
