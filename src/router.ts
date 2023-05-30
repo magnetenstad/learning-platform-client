@@ -1,14 +1,17 @@
-import WelcomeView from './views/welcome/WelcomeView.vue'
-import QuizView from '@/views/quiz/QuizView.vue'
-import EditView from '@/views/edit/EditView.vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { useQuizStore } from './stores/quiz'
+import { useQuizStore } from '@/stores/quiz'
+
+const WelcomeView = () => import('@/views/welcome/WelcomeView.vue')
+const QuizView = () => import('@/views/quiz/QuizView.vue')
+const EditView = () => import('@/views/edit/EditView.vue')
+const BooksView = () => import('@/views/books/BooksView.vue')
 
 const routes = [
-  { path: '/', name: 'welcome', component: WelcomeView },
+  { path: '/welcome', name: 'welcome', component: WelcomeView },
   { path: '/quiz', name: 'quiz', component: QuizView },
   { path: '/edit', name: 'edit', component: EditView },
-  { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/' },
+  { path: '/books', name: 'books', component: BooksView },
+  { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/welcome' },
 ]
 
 export const router = createRouter({
@@ -27,10 +30,5 @@ router.beforeEach(async to => {
     if (to.name === 'quiz') {
       await quizStore.requestQuestionList()
     }
-    return
-  }
-
-  if (to.name != 'welcome' && quizStore.quiz.subject.length == 0) {
-    return { name: 'welcome' }
   }
 })
