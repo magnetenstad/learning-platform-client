@@ -9,7 +9,7 @@ const BookView = () => import('@/views/books/BookView.vue')
 const ChapterView = () => import('@/views/books/ChapterView.vue')
 
 const routes = [
-  { path: '/welcome', name: 'welcome', component: WelcomeView },
+  { path: '/', name: 'welcome', component: WelcomeView },
   { path: '/quiz', name: 'quiz', component: QuizView },
   { path: '/edit', name: 'edit', component: EditView },
   { path: '/bookshelf', name: 'bookshelf', component: BookShelfView },
@@ -19,7 +19,7 @@ const routes = [
     name: 'chapter',
     component: ChapterView,
   },
-  // { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/welcome' },
+  // { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/' },
 ]
 
 export const api = import.meta.env.DEV
