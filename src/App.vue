@@ -22,7 +22,6 @@ const bookStore = useBookStore()
 watch(
   () => router.currentRoute.value.params,
   params => {
-    console.log(params)
     Object.assign(bookStore.params, params)
   },
 )
