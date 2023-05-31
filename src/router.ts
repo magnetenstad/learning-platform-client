@@ -4,15 +4,27 @@ import { useQuizStore } from '@/stores/quiz'
 const WelcomeView = () => import('@/views/welcome/WelcomeView.vue')
 const QuizView = () => import('@/views/quiz/QuizView.vue')
 const EditView = () => import('@/views/edit/EditView.vue')
-const BooksView = () => import('@/views/books/BooksView.vue')
+const BookShelfView = () => import('@/views/books/BookShelfView.vue')
+const BookView = () => import('@/views/books/BookView.vue')
+const ChapterView = () => import('@/views/books/ChapterView.vue')
 
 const routes = [
   { path: '/welcome', name: 'welcome', component: WelcomeView },
   { path: '/quiz', name: 'quiz', component: QuizView },
   { path: '/edit', name: 'edit', component: EditView },
-  { path: '/books', name: 'books', component: BooksView },
-  { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/welcome' },
+  { path: '/bookshelf', name: 'bookshelf', component: BookShelfView },
+  { path: '/book/:book', name: 'book', component: BookView },
+  {
+    path: '/book/:book/chapter/:chapter',
+    name: 'chapter',
+    component: ChapterView,
+  },
+  // { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/welcome' },
 ]
+
+export const api = import.meta.env.DEV
+  ? 'http://localhost:8000'
+  : 'https://owly.deno.dev'
 
 export const router = createRouter({
   history: createWebHashHistory(),

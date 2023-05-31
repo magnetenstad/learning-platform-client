@@ -20,7 +20,8 @@
     </div>
     <br />
     <span
-      >Experimental: <router-link to="/books">browse books</router-link></span
+      >Experimental:
+      <router-link to="/bookshelf">browse bookshelf</router-link></span
     >
   </div>
 </template>

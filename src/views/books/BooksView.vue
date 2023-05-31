@@ -1,1 +1,0 @@
-<template>Hello books!</template>

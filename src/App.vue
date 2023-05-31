@@ -12,8 +12,20 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { useGlobalStore } from './stores/global'
+import { watch } from 'vue'
+import { router } from './router'
+import { useBookStore } from './stores/books'
 
 const store = useGlobalStore()
+const bookStore = useBookStore()
+
+watch(
+  () => router.currentRoute.value.params,
+  params => {
+    console.log(params)
+    Object.assign(bookStore.params, params)
+  },
+)
 </script>
 
 <style scoped>

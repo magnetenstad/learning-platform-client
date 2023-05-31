@@ -1,6 +1,7 @@
 import { RadioButton } from '@/components/RadioButtons.vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useGlobalStore } from './global'
+import { api } from '@/router'
 
 export type Question = {
   question: string
@@ -22,10 +23,6 @@ export enum Correctness {
   Somewhat,
   Correct,
 }
-
-const api = import.meta.env.DEV
-  ? 'http://localhost:8000'
-  : 'https://owly.deno.dev'
 
 const inputToQuestions = (
   questions: string,
