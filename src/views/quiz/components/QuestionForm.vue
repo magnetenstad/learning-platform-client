@@ -10,10 +10,14 @@
       @input="input"
     ></RadioButtons>
     <textarea v-if="!question.choices" v-model="question.userAnswer"></textarea>
+    <p v-if="question.hint">Hint: {{ question.hint }}</p>
     <p v-if="question.comment">Evaluation: {{ question.comment }}</p>
     <br />
-    <div>
+    <div style="display: flex; justify-content: space-between">
       <button @click="submit" :disabled="submitDisabled">Submit</button>
+      <button @click="requestHint" :disabled="submitDisabled">
+        Ask for hint
+      </button>
     </div>
   </div>
 </template>
@@ -30,6 +34,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   submit: [question: Question]
+  requestHint: [question: Question]
 }>()
 
 const input = (ev: Event) => {
@@ -38,6 +43,10 @@ const input = (ev: Event) => {
 
 const submit = () => {
   emit('submit', props.question)
+}
+
+const requestHint = () => {
+  emit('requestHint', props.question)
 }
 
 const getColor = (question: Question) => {

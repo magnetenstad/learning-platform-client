@@ -10,6 +10,7 @@ export type Question = {
   choices?: RadioButton[]
   correctAnswer?: string
   comment?: string
+  hint?: string
 }
 
 export type Quiz = {
@@ -95,6 +96,24 @@ const fetchQuestionList = async (subject: string) => {
   }
 }
 
+const fetchHint = async (name: string, question: Question) => {
+  try {
+    const result = (await (
+      await fetch(`${api}/hint`, {
+        method: 'POST',
+        body: JSON.stringify({
+          question: question.question,
+          subject: name,
+        }),
+      })
+    ).json()) as { hint: string }
+
+    return result.hint
+  } catch {
+    return 'Server error'
+  }
+}
+
 export const useQuizStore = defineStore('quiz', {
   state: () => ({
     quiz: {
@@ -107,15 +126,12 @@ export const useQuizStore = defineStore('quiz', {
 
   actions: {
     async requestGrade(name: string, question: Question) {
-      question.correctness = Correctness.Unknown
-
-      if (question.userAnswer == question.correctAnswer) {
-        question.correctness = Correctness.Correct
-      }
-
       const grade = await fetchGrade(name, question)
       question.correctness = grade.correctness
       question.comment = grade.comment
+    },
+    async requestHint(name: string, question: Question) {
+      question.hint = await fetchHint(name, question)
     },
     readQuestionsFromInput() {
       this.quiz.questions = inputToQuestions(

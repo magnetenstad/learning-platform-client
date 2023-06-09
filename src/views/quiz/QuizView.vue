@@ -16,6 +16,7 @@
       :question="q"
       :index="i + 1"
       @submit="submit"
+      @requestHint="requestHint"
       :submitDisabled="submitDisabled"
     ></QuestionForm>
   </div>
@@ -25,9 +26,9 @@
 </template>
 
 <script lang="ts" setup>
+import QuestionForm from './components/QuestionForm.vue'
 import { onMounted, ref } from 'vue'
 import { Question, useQuizStore } from '@/stores/quiz'
-import QuestionForm from './components/QuestionForm.vue'
 import { router } from '@/router'
 import { RouterLink } from 'vue-router'
 
@@ -38,6 +39,13 @@ const submit = async (question: Question) => {
   submitDisabled.value = true
   question.comment = 'Loading..'
   await store.requestGrade(store.quiz.subject, question)
+  submitDisabled.value = false
+}
+
+const requestHint = async (question: Question) => {
+  submitDisabled.value = true
+  question.hint = 'Loading..'
+  await store.requestHint(store.quiz.subject, question)
   submitDisabled.value = false
 }
 
