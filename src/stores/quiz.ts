@@ -9,7 +9,7 @@ export type Question = {
   correctness: Correctness
   choices?: RadioButton[]
   correctAnswer?: string
-  evaluation?: string
+  comment?: string
 }
 
 export type Quiz = {
@@ -42,25 +42,45 @@ const inputToQuestions = (
 
 const fetchGrade = async (name: string, question: Question) => {
   if (question.userAnswer.trim().length == 0) {
-    return 'Please provide an answer.'
+    return {
+      correctness: Correctness.Unknown,
+      comment: 'Please provide an answer.',
+    }
   }
   try {
-    const result = await fetch(`${api}/grade`, {
-      method: 'POST',
-      body: JSON.stringify({
-        question: question.question,
-        correctAnswer: question.correctAnswer,
-        userAnswer: question.userAnswer,
-        subject: name,
-      }),
-    })
-    return (await result.json()).result as string
+    const result = (await (
+      await fetch(`${api}/grade`, {
+        method: 'POST',
+        body: JSON.stringify({
+          question: question.question,
+          correctAnswer: question.correctAnswer,
+          userAnswer: question.userAnswer,
+          subject: name,
+        }),
+      })
+    ).json()) as { correctness: string; comment: string }
+
+    result.correctness = result.correctness.toLowerCase()
+    let correctness = Correctness.Unknown
+    if (result.correctness.includes('correct')) {
+      correctness = Correctness.Correct
+    }
+    if (result.correctness.includes('incorrect')) {
+      correctness = Correctness.Incorrect
+    }
+    if (
+      result.correctness.includes('somewhat') ||
+      result.correctness.includes('partial')
+    ) {
+      correctness = Correctness.Somewhat
+    }
+    return { correctness, comment: result.comment }
   } catch {
-    return 'Server error'
+    return { correctness: Correctness.Unknown, comment: 'Server error' }
   }
 }
 
-const fetchQuestionInput = async (subject: string) => {
+const fetchQuestionList = async (subject: string) => {
   if (subject.trim().length == 0) {
     return 'Please provide an subject.'
   }
@@ -69,7 +89,7 @@ const fetchQuestionInput = async (subject: string) => {
       method: 'POST',
       body: JSON.stringify({ subject: subject }),
     })
-    return (await result.json()).result
+    return Object.values(await result.json()).join('\n')
   } catch {
     return 'Server error'
   }
@@ -93,19 +113,9 @@ export const useQuizStore = defineStore('quiz', {
         question.correctness = Correctness.Correct
       }
 
-      question.evaluation = await fetchGrade(name, question)
-
-      const firstSentence = question.evaluation.split('.')[0].toLowerCase()
-      if (!firstSentence) return
-      if (firstSentence.includes('correct')) {
-        question.correctness = Correctness.Correct
-      }
-      if (firstSentence.includes('incorrect')) {
-        question.correctness = Correctness.Incorrect
-      }
-      if (firstSentence.includes('somewhat')) {
-        question.correctness = Correctness.Somewhat
-      }
+      const grade = await fetchGrade(name, question)
+      question.correctness = grade.correctness
+      question.comment = grade.comment
     },
     readQuestionsFromInput() {
       this.quiz.questions = inputToQuestions(
@@ -118,7 +128,7 @@ export const useQuizStore = defineStore('quiz', {
       globalStore.startLoading(
         `Generating quiz about ${this.quiz.subject}...\nThis can take up to 20 seconds.`,
       )
-      this.questionInput = await fetchQuestionInput(this.quiz.subject)
+      this.questionInput = await fetchQuestionList(this.quiz.subject)
       this.readQuestionsFromInput()
       globalStore.stopLoading()
     },

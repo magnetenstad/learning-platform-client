@@ -10,7 +10,7 @@
       @input="input"
     ></RadioButtons>
     <textarea v-if="!question.choices" v-model="question.userAnswer"></textarea>
-    <p v-if="question.evaluation">Evaluation: {{ question.evaluation }}</p>
+    <p v-if="question.comment">Evaluation: {{ question.comment }}</p>
     <br />
     <div>
       <button @click="submit" :disabled="submitDisabled">Submit</button>

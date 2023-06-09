@@ -36,7 +36,7 @@ const submitDisabled = ref(false)
 
 const submit = async (question: Question) => {
   submitDisabled.value = true
-  question.evaluation = 'Loading..'
+  question.comment = 'Loading..'
   await store.requestGrade(store.quiz.subject, question)
   submitDisabled.value = false
 }
