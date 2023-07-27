@@ -1,19 +1,28 @@
 <template>
-  <div class="question-container" :style="{ color: getColor(question) }">
-    <p class="question-text">
-      <b v-if="index">{{ index + ') ' }}</b> {{ question.question }}
-    </p>
-    <RadioButtons
-      v-if="question.choices"
-      :name="question.question"
-      :buttons="
-        question.choices.map(choice => ({
-          value: choice,
-          label: choice,
-        }))
-      "
-      @input="input"
-    ></RadioButtons>
+  <div class="question-container">
+    <div
+      class="question-text row"
+      style="gap: 1em"
+      :style="{ color: getColor(question) }"
+    >
+      <b v-if="index">{{ index }}.</b>
+      <p>
+        {{ question.question }}
+      </p>
+    </div>
+    <div style="margin-left: 1em">
+      <RadioButtons
+        v-if="question.choices"
+        :name="question.question"
+        :buttons="
+          question.choices.map(choice => ({
+            value: choice,
+          }))
+        "
+        :color="getColor(question)"
+        @input="input"
+      ></RadioButtons>
+    </div>
     <textarea v-if="!question.choices" v-model="question.userAnswer"></textarea>
     <p v-if="question.hint">Hint: {{ question.hint }}</p>
     <p v-if="question.comment">Evaluation: {{ question.comment }}</p>
@@ -28,7 +37,7 @@
 </template>
 
 <script lang="ts" setup>
-import RadioButtons from '@/components/RadioButtons.vue'
+import RadioButtons, { RadioButton } from '@/components/RadioButtons.vue'
 import { Question, Correctness } from '@/stores/quiz'
 
 const props = defineProps<{
@@ -42,8 +51,9 @@ const emit = defineEmits<{
   requestHint: [question: Question]
 }>()
 
-const input = (ev: Event) => {
-  props.question.userAnswer = (ev.target as HTMLInputElement).value
+const input = (button: RadioButton) => {
+  props.question.userAnswer = button.value
+  props.question.correctness = Correctness.Unknown
 }
 
 const submit = () => {
@@ -76,8 +86,7 @@ const getColor = (question: Question) => {
   flex-direction: column;
   margin: 2em 0;
 }
-
-/* .question-text {
-  font-weight: bold;
-} */
+.question-text {
+  font-size: large;
+}
 </style>

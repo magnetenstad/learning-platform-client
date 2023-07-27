@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row spaced">
     <h1>Edit: {{ quizStore.currentQuiz.subject }}</h1>
     <div>
       <button @click="router.push({ name: 'quiz' })">Take quiz</button>

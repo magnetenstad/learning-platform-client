@@ -75,6 +75,9 @@ const fetchGrade = async (name: string, question: Question) => {
     ) {
       correctness = Correctness.Somewhat
     }
+    if (question.userAnswer == question.correctAnswer) {
+      correctness = Correctness.Correct
+    }
     return { correctness, comment: result.comment }
   } catch {
     return { correctness: Correctness.Unknown, comment: 'Server error' }

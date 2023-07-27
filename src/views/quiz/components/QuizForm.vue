@@ -1,6 +1,6 @@
 <template>
-  <div class="row">
-    <h1>Quiz: {{ quiz.subject }}</h1>
+  <div class="row spaced">
+    <h2>Quiz: {{ quiz.subject }}</h2>
     <div>
       <button @click="router.push({ name: 'edit' })">Edit</button>
     </div>

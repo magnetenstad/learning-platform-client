@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import RadioButtons from '@/components/RadioButtons.vue'
+import RadioButtons, { RadioButton } from '@/components/RadioButtons.vue'
 import { RouterLink } from 'vue-router'
 import { router } from '@/router'
 import { ref, computed } from 'vue'
@@ -35,8 +35,8 @@ import { ref, computed } from 'vue'
 const subject = ref('')
 const option = ref('')
 
-const optionInput = (e: Event) => {
-  option.value = (e.target as HTMLInputElement).value
+const optionInput = (button: RadioButton) => {
+  option.value = button.value
 }
 
 const submitDisabled = computed(() => !option.value || !subject.value)
