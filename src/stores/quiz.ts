@@ -10,6 +10,7 @@ export type Question = {
   correctAnswer?: string
   comment?: string
   hint?: string
+  source?: string
 }
 
 export type Quiz = {

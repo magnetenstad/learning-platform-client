@@ -4,11 +4,11 @@
       Book {{ bookStore.getBook.name }}, chapter
       {{ bookStore.getChapter.name }}
     </h1>
-    <p>{{ bookStore.getChapter.text }}</p>
-    <QuizForm
-      v-if="bookStore.getChapter.quiz"
-      :quiz="bookStore.getChapter.quiz"
-    ></QuizForm>
+    <div v-if="!bookStore.getChapter.quiz">
+      <p>Generating questions...</p>
+      <p>{{ bookStore.getChapter.text }}</p>
+    </div>
+    <QuizForm v-else :quiz="bookStore.getChapter.quiz"></QuizForm>
   </div>
   <div v-else>
     <h1>

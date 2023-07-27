@@ -75,6 +75,7 @@ export const fetchText = async (book: Book, chapter: Chapter) => {
       }),
     })
   ).json()) as { question: string; choices: string[]; correctAnswer: string }[]
+
   chapter.quiz = {
     subject: chapter.name,
     questions: questions.map(question => ({

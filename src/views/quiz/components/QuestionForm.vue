@@ -1,5 +1,6 @@
 <template>
   <div class="question-container">
+    <p v-if="question.source">{{ question.source }}</p>
     <div
       class="question-text row"
       style="gap: 1em"
