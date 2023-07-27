@@ -1,55 +1,15 @@
 <template>
-  <div class="row">
-    <h1>Quiz: {{ store.quiz.subject }}</h1>
-    <div>
-      <button @click="router.push({ name: 'edit' })">Edit</button>
-    </div>
-  </div>
-
-  <p v-if="store.quiz.questions.length == 0">
-    Go <router-link to="/edit">add some questions</router-link>!
-  </p>
-
-  <div v-for="(q, i) in store.quiz.questions">
-    <hr />
-    <QuestionForm
-      :question="q"
-      :index="i + 1"
-      @submit="submit"
-      @requestHint="requestHint"
-      :submitDisabled="submitDisabled"
-    ></QuestionForm>
-  </div>
-  <div>
-    <p>Score: {{ store.getScorePercentage }}</p>
-  </div>
+  <QuizForm :quiz="quizStore.currentQuiz"></QuizForm>
 </template>
 
 <script lang="ts" setup>
-import QuestionForm from './components/QuestionForm.vue'
-import { onMounted, ref } from 'vue'
-import { Question, useQuizStore } from '@/stores/quiz'
-import { router } from '@/router'
-import { RouterLink } from 'vue-router'
+import { onMounted } from 'vue'
+import { readQuestionsFromInput, useQuizStore } from '@/stores/quiz'
+import QuizForm from './components/QuizForm.vue'
 
-const store = useQuizStore()
-const submitDisabled = ref(false)
-
-const submit = async (question: Question) => {
-  submitDisabled.value = true
-  question.comment = 'Loading..'
-  await store.requestGrade(store.quiz.subject, question)
-  submitDisabled.value = false
-}
-
-const requestHint = async (question: Question) => {
-  submitDisabled.value = true
-  question.hint = 'Loading..'
-  await store.requestHint(store.quiz.subject, question)
-  submitDisabled.value = false
-}
+const quizStore = useQuizStore()
 
 onMounted(() => {
-  store.readQuestionsFromInput()
+  readQuestionsFromInput(quizStore.currentQuiz)
 })
 </script>

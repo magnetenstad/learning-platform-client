@@ -16,6 +16,7 @@ export type Question = {
 export type Quiz = {
   subject: string
   questions: Question[]
+  quizString: string
 }
 
 export enum Correctness {
@@ -116,60 +117,57 @@ const fetchHint = async (name: string, question: Question) => {
 
 export const useQuizStore = defineStore('quiz', {
   state: () => ({
-    quiz: {
+    currentQuiz: {
       subject: '',
       questions: [],
+      quizString: '',
     } as Quiz,
     questionInput: '',
     loading: false,
   }),
-
-  actions: {
-    async requestGrade(name: string, question: Question) {
-      const grade = await fetchGrade(name, question)
-      question.correctness = grade.correctness
-      question.comment = grade.comment
-    },
-    async requestHint(name: string, question: Question) {
-      question.hint = await fetchHint(name, question)
-    },
-    readQuestionsFromInput() {
-      this.quiz.questions = inputToQuestions(
-        this.questionInput,
-        this.quiz.questions,
-      )
-    },
-    async requestQuestionList() {
-      const globalStore = useGlobalStore()
-      globalStore.startLoading(
-        `Generating quiz about ${this.quiz.subject}...\nThis can take up to 20 seconds.`,
-      )
-      this.questionInput = await fetchQuestionList(this.quiz.subject)
-      this.readQuestionsFromInput()
-      globalStore.stopLoading()
-    },
-  },
-
-  getters: {
-    getScorePercentage: state =>
-      (
-        (100 *
-          state.quiz.questions
-            .map(q => {
-              switch (q.correctness) {
-                case Correctness.Correct:
-                  return 1
-                case Correctness.Somewhat:
-                  return 0.5
-                default:
-                  return 0
-              }
-            })
-            .reduce((sum: number, next) => sum + next, 0)) /
-        state.quiz.questions.length
-      ).toFixed(1) + ' %',
-  },
 })
+
+export const requestGrade = async (name: string, question: Question) => {
+  const grade = await fetchGrade(name, question)
+  question.correctness = grade.correctness
+  question.comment = grade.comment
+}
+
+export const requestHint = async (name: string, question: Question) => {
+  question.hint = await fetchHint(name, question)
+}
+
+export const readQuestionsFromInput = (quiz: Quiz) => {
+  quiz.questions = inputToQuestions(quiz.quizString, quiz.questions)
+}
+
+export const requestQuestionList = async (quiz: Quiz) => {
+  const globalStore = useGlobalStore()
+  globalStore.startLoading(
+    `Generating quiz about ${quiz.subject}...\nThis can take up to 20 seconds.`,
+  )
+  quiz.quizString = await fetchQuestionList(quiz.subject)
+  readQuestionsFromInput(quiz)
+  globalStore.stopLoading()
+}
+
+export const getScorePercentage = (quiz: Quiz) =>
+  (
+    (100 *
+      quiz.questions
+        .map(q => {
+          switch (q.correctness) {
+            case Correctness.Correct:
+              return 1
+            case Correctness.Somewhat:
+              return 0.5
+            default:
+              return 0
+          }
+        })
+        .reduce((sum: number, next) => sum + next, 0)) /
+    quiz.questions.length
+  ).toFixed(1) + ' %'
 
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useQuizStore, import.meta.hot))

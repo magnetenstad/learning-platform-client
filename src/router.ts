@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { useQuizStore } from '@/stores/quiz'
+import { requestQuestionList, useQuizStore } from '@/stores/quiz'
 
 const WelcomeView = () => import('@/views/welcome/WelcomeView.vue')
 const QuizView = () => import('@/views/quiz/QuizView.vue')
@@ -35,12 +35,12 @@ router.beforeEach(async to => {
   const quizStore = useQuizStore()
 
   const subject = to.query.subject?.toString()
-  if (subject && subject != quizStore.quiz.subject) {
-    quizStore.quiz.subject = subject
-    quizStore.quiz.questions = []
+  if (subject && subject != quizStore.currentQuiz.subject) {
+    quizStore.currentQuiz.subject = subject
+    quizStore.currentQuiz.questions = []
     quizStore.questionInput = ''
     if (to.name === 'quiz') {
-      await quizStore.requestQuestionList()
+      await requestQuestionList(quizStore.currentQuiz)
     }
   }
 })
