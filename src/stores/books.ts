@@ -57,14 +57,15 @@ export const fetchChapters = async (book: Book) => {
 }
 
 export const fetchText = async (book: Book, chapter: Chapter) => {
-  if (chapter.text.length > 0) return
-  chapter.text =
-    ((
-      await (
-        await fetch(`${api}/book/${book.name}/chapter/${chapter.name}`)
-      ).json()
-    ).text as string) ?? ''
+  // if (chapter.text.length > 0) return
+  // chapter.text =
+  //   ((
+  //     await (
+  //       await fetch(`${api}/book/${book.name}/chapter/${chapter.name}`)
+  //     ).json()
+  //   ).text as string) ?? ''
 
+  if (chapter.quiz) return
   const questions = (await (
     await fetch(`${api}/chapter-questions`, {
       method: 'POST',
