@@ -1,4 +1,3 @@
-import { RadioButton } from '@/components/RadioButtons.vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { useGlobalStore } from './global'
 import { api } from '@/router'
@@ -7,7 +6,7 @@ export type Question = {
   question: string
   userAnswer: string
   correctness: Correctness
-  choices?: RadioButton[]
+  choices?: string[]
   correctAnswer?: string
   comment?: string
   hint?: string

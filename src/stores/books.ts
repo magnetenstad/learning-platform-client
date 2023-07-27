@@ -1,5 +1,6 @@
 import { api } from '@/router'
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import { Correctness, Quiz } from './quiz'
 
 export type Book = {
   name: string
@@ -9,6 +10,7 @@ export type Book = {
 export type Chapter = {
   name: string
   text: string
+  quiz?: Quiz
 }
 
 export const useBookStore = defineStore('books', {
@@ -31,25 +33,6 @@ export const useBookStore = defineStore('books', {
         chapters: [],
       }))
     },
-    async fetchChapters(book: Book) {
-      if (book.chapters.length > 0) return
-      book.chapters = (
-        ((await (await fetch(`${api}/book/${book.name}`)).json())
-          .chapters as string[]) ?? []
-      ).map(name => ({
-        name,
-        text: '',
-      }))
-    },
-    async fetchText(book: Book, chapter: Chapter) {
-      if (chapter.text.length > 0) return
-      chapter.text =
-        ((
-          await (
-            await fetch(`${api}/book/${book.name}/chapter/${chapter.name}`)
-          ).json()
-        ).text as string) ?? ''
-    },
   },
 
   getters: {
@@ -61,6 +44,48 @@ export const useBookStore = defineStore('books', {
     },
   },
 })
+
+export const fetchChapters = async (book: Book) => {
+  if (book.chapters.length > 0) return
+  book.chapters = (
+    ((await (await fetch(`${api}/book/${book.name}`)).json())
+      .chapters as string[]) ?? []
+  ).map(name => ({
+    name,
+    text: '',
+  }))
+}
+
+export const fetchText = async (book: Book, chapter: Chapter) => {
+  if (chapter.text.length > 0) return
+  chapter.text =
+    ((
+      await (
+        await fetch(`${api}/book/${book.name}/chapter/${chapter.name}`)
+      ).json()
+    ).text as string) ?? ''
+
+  const questions = (await (
+    await fetch(`${api}/chapter-questions`, {
+      method: 'POST',
+      body: JSON.stringify({
+        subject: book.name,
+        book: book.name,
+        chapter: chapter.name,
+      }),
+    })
+  ).json()) as { question: string; choices: string[]; correctAnswer: string }[]
+  console.log(questions)
+  chapter.quiz = {
+    subject: chapter.name,
+    questions: questions.map(question => ({
+      ...question,
+      correctness: Correctness.Unknown,
+      userAnswer: '',
+    })),
+    quizString: '',
+  }
+}
 
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useBookStore, import.meta.hot))

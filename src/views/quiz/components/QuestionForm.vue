@@ -5,8 +5,13 @@
     </p>
     <RadioButtons
       v-if="question.choices"
-      name="name"
-      :buttons="question.choices"
+      :name="question.question"
+      :buttons="
+        question.choices.map(choice => ({
+          value: choice,
+          label: choice,
+        }))
+      "
       @input="input"
     ></RadioButtons>
     <textarea v-if="!question.choices" v-model="question.userAnswer"></textarea>

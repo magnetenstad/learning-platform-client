@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBookStore } from '@/stores/books'
+import { fetchChapters, useBookStore } from '@/stores/books'
 import { onMounted, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
@@ -31,7 +31,7 @@ watch(
   () => bookStore.getBook,
   async book => {
     if (book) {
-      await bookStore.fetchChapters(book)
+      await fetchChapters(book)
     }
   },
   { immediate: true },

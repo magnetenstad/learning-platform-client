@@ -5,6 +5,10 @@
       {{ bookStore.getChapter.name }}
     </h1>
     <p>{{ bookStore.getChapter.text }}</p>
+    <QuizForm
+      v-if="bookStore.getChapter.quiz"
+      :quiz="bookStore.getChapter.quiz"
+    ></QuizForm>
   </div>
   <div v-else>
     <h1>
@@ -15,8 +19,9 @@
 </template>
 
 <script lang="ts" setup>
-import { useBookStore } from '@/stores/books'
+import { fetchChapters, fetchText, useBookStore } from '@/stores/books'
 import { onMounted, watch } from 'vue'
+import QuizForm from '../quiz/components/QuizForm.vue'
 
 const bookStore = useBookStore()
 
@@ -30,7 +35,7 @@ watch(
   () => bookStore.getBook,
   async book => {
     if (book) {
-      await bookStore.fetchChapters(book)
+      await fetchChapters(book)
     }
   },
   { immediate: true },
@@ -39,7 +44,7 @@ watch(
 watch(
   [() => bookStore.getBook, () => bookStore.getChapter],
   async ([book, chapter]) => {
-    if (book && chapter) await bookStore.fetchText(book, chapter)
+    if (book && chapter) await fetchText(book, chapter)
   },
   { immediate: true },
 )
