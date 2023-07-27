@@ -5,7 +5,7 @@
       {{ bookStore.getChapter.name }}
     </h1>
     <div v-if="!bookStore.getChapter.quiz">
-      <p>Generating questions...</p>
+      <p>Generating content...</p>
       <p>{{ bookStore.getChapter.text }}</p>
     </div>
     <QuizForm v-else :quiz="bookStore.getChapter.quiz"></QuizForm>

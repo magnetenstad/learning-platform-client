@@ -90,4 +90,8 @@ const getColor = (question: Question) => {
 .question-text {
   font-size: large;
 }
+
+p {
+  white-space: pre-wrap;
+}
 </style>
