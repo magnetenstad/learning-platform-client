@@ -1,5 +1,8 @@
 <template>
-  <h1>Welcome to Owly! 🦉</h1>
+  <div class="row spaced">
+    <h1>Welcome to Owly! 🦉</h1>
+    <button @click="userStore.signIn">Sign In</button>
+  </div>
   <div class="col">
     <label for="name">I would like to learn about</label>
     <input id="name" type="text" v-model="subject" />
@@ -31,6 +34,9 @@ import RadioButtons, { RadioButton } from '@/components/RadioButtons.vue'
 import { RouterLink } from 'vue-router'
 import { router } from '@/router'
 import { ref, computed } from 'vue'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 const subject = ref('')
 const option = ref('')

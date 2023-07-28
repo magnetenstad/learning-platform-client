@@ -7,9 +7,11 @@ const EditView = () => import('@/views/edit/EditView.vue')
 const BookShelfView = () => import('@/views/books/BookShelfView.vue')
 const BookView = () => import('@/views/books/BookView.vue')
 const ChapterView = () => import('@/views/books/ChapterView.vue')
+const UserView = () => import('@/views/user/UserView.vue')
 
 const routes = [
   { path: '/', name: 'welcome', component: WelcomeView },
+  { path: '/user', name: 'user', component: UserView },
   { path: '/quiz', name: 'quiz', component: QuizView },
   { path: '/edit', name: 'edit', component: EditView },
   { path: '/bookshelf', name: 'bookshelf', component: BookShelfView },
