@@ -3,7 +3,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia'
 
 const signInRedirectUrl = import.meta.env.DEV
   ? 'http://127.0.0.1:5173/owly/#/'
-  : undefined
+  : 'https://magne.dev/owly/#/'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
