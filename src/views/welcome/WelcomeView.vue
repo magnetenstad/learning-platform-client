@@ -1,9 +1,9 @@
 <template>
   <div class="row spaced">
-    <h1>Welcome to Owly! 🦉</h1>
+    <h1>Velkommen til Utdyp 🦉</h1>
     <button @click="userStore.getUser">Get session</button>
     <button v-if="!userStore.user" @click="userStore.signIn">Sign In</button>
-    <button v-else @click="userStore.user">Sign In</button>
+    <button v-else @click="userStore.signOut">Sign out</button>
   </div>
   <div class="col">
     <label for="name">I would like to learn about</label>

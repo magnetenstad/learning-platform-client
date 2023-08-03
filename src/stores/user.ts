@@ -3,12 +3,13 @@ import { User } from '@supabase/supabase-js'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
 const signInRedirectUrl = import.meta.env.DEV
-  ? 'http://127.0.0.1:5173/owly/#/'
-  : 'https://magne.dev/owly/#/'
+  ? 'http://127.0.0.1:5173/?'
+  : 'https://utdyp.com/?'
 
 supabase.auth.onAuthStateChange((_event, session) => {
-  console.log(_event)
-  console.log(session)
+  if (session) {
+    supabase.auth.setSession(session)
+  }
 })
 
 export const useUserStore = defineStore('user', {
@@ -30,6 +31,11 @@ export const useUserStore = defineStore('user', {
         options: { redirectTo: signInRedirectUrl },
       })
       console.log(res.data)
+    },
+    async signOut() {
+      // await this.getUser()
+      // if (!this.user) return
+      await supabase.auth.signOut()
     },
   },
 })
