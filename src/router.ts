@@ -26,7 +26,7 @@ const routes = [
 
 export const api = import.meta.env.DEV
   ? 'http://localhost:8000'
-  : 'https://owly.deno.dev'
+  : 'https://utdyp.deno.dev'
 
 export const router = createRouter({
   history: createWebHashHistory(),
