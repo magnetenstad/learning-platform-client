@@ -27,13 +27,28 @@
 textarea {
   min-height: 100px;
   padding: 0.5em;
+  border-radius: 0.5em;
 }
 
 input {
   padding: 0.5em;
+  border-radius: 0.5em;
+  border: 1px solid gray;
 }
 
 body {
   margin: 0;
   padding: 0;
+}
+
+button {
+  padding: 0.6em 1em;
+  border-radius: 0.5em;
+  border: none;
+  cursor: pointer;
+  background-color: #96afdd;
+}
+
+button:disabled {
+  background-color: #dce5f8;
 }
