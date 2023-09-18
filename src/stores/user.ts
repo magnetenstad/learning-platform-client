@@ -3,10 +3,12 @@ import { User } from '@supabase/supabase-js'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
 const signInRedirectUrl = import.meta.env.DEV
-  ? 'http://127.0.0.1:5173/?'
-  : 'https://utdyp.com/?'
+  ? 'http://127.0.0.1:5173/#/'
+  : 'https://utdyp.com/#/'
 
 supabase.auth.onAuthStateChange((_event, session) => {
+  console.log(_event)
+  console.log(session)
   if (session) {
     supabase.auth.setSession(session)
   }

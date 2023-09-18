@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { RouteRecordRaw, createRouter, createWebHashHistory } from 'vue-router'
 import { requestQuestionList, useQuizStore } from '@/stores/quiz'
 
 const WelcomeView = () => import('@/views/welcome/WelcomeView.vue')
@@ -9,8 +9,9 @@ const BookView = () => import('@/views/books/BookView.vue')
 const ChapterView = () => import('@/views/books/ChapterView.vue')
 const UserView = () => import('@/views/user/UserView.vue')
 
-const routes = [
-  { path: '/', name: 'welcome', component: WelcomeView },
+const routes: Readonly<RouteRecordRaw[]> = [
+  { path: '/', name: 'root', redirect: { name: 'home' } },
+  { path: '/home', name: 'home', component: WelcomeView },
   { path: '/user', name: 'user', component: UserView },
   { path: '/quiz', name: 'quiz', component: QuizView },
   { path: '/edit', name: 'edit', component: EditView },
@@ -21,7 +22,7 @@ const routes = [
     name: 'chapter',
     component: ChapterView,
   },
-  // { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/' },
+  { path: '/:pathMatch(.*)*', name: 'not-found', redirect: '/' },
 ]
 
 export const api = import.meta.env.DEV
@@ -45,4 +46,6 @@ router.beforeEach(async to => {
       await requestQuestionList(quizStore.currentQuiz)
     }
   }
+
+  console.log(to.query)
 })
