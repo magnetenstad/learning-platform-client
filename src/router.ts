@@ -1,5 +1,6 @@
 import { RouteRecordRaw, createRouter, createWebHashHistory } from 'vue-router'
 import { requestQuestionList, useQuizStore } from '@/stores/quiz'
+import { supabase } from './supabase'
 
 const WelcomeView = () => import('@/views/welcome/WelcomeView.vue')
 const QuizView = () => import('@/views/quiz/QuizView.vue')
@@ -47,5 +48,16 @@ router.beforeEach(async to => {
     }
   }
 
-  console.log(to.query)
+  // dirty auth hack
+  if (to.hash.startsWith('#access_token=')) {
+    const jwt: any = {}
+    to.hash.split('&').forEach(kvp => {
+      const [key, value] = kvp.split('=')
+      jwt[key.replace('#', '')] = value
+    })
+    if ('access_token' in jwt && 'refresh_token' in jwt) {
+      supabase.auth.setSession(jwt)
+      return { name: 'home' }
+    }
+  }
 })
