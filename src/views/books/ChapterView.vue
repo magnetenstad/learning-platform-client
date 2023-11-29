@@ -8,7 +8,11 @@
       <p>Generating content...</p>
       <p>{{ bookStore.getChapter.text }}</p>
     </div>
-    <QuizForm v-else :quiz="bookStore.getChapter.quiz"></QuizForm>
+    <QuizForm
+      v-else
+      :quiz="bookStore.getChapter.quiz"
+      :show-edit="false"
+    ></QuizForm>
   </div>
   <div v-else>
     <h1>

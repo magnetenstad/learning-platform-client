@@ -1,7 +1,7 @@
 <template>
   <div class="row spaced">
     <h2>Quiz: {{ quiz.subject }}</h2>
-    <div>
+    <div v-if="showEdit">
       <button @click="router.push({ name: 'edit' })">Edit</button>
     </div>
   </div>
@@ -38,9 +38,15 @@ import {
 import { router } from '@/router'
 import { RouterLink } from 'vue-router'
 
-const props = defineProps<{
-  quiz: Quiz
-}>()
+const props = withDefaults(
+  defineProps<{
+    quiz: Quiz
+    showEdit: boolean
+  }>(),
+  {
+    showEdit: true,
+  },
+)
 
 const submitDisabled = ref(false)
 
