@@ -9,10 +9,12 @@ const BookShelfView = () => import('@/views/books/BookShelfView.vue')
 const BookView = () => import('@/views/books/BookView.vue')
 const ChapterView = () => import('@/views/books/ChapterView.vue')
 const UserView = () => import('@/views/user/UserView.vue')
+const WikiView = () => import('@/views/wiki/WikiView.vue')
 
 const routes: Readonly<RouteRecordRaw[]> = [
   { path: '/', name: 'root', redirect: { name: 'home' } },
   { path: '/home', name: 'home', component: WelcomeView },
+  { path: '/wiki', name: 'wiki', component: WikiView },
   { path: '/user', name: 'user', component: UserView },
   { path: '/quiz', name: 'quiz', component: QuizView },
   { path: '/edit', name: 'edit', component: EditView },
