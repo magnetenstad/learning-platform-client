@@ -52,3 +52,7 @@ button {
 button:disabled {
   background-color: #dce5f8;
 }
+
+.clickable {
+  cursor: pointer;
+}
